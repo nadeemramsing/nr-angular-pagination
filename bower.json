@@ -1,0 +1,23 @@
+{
+  "name": "nr-angular-pagination",
+  "version": "0.0.1",
+  "homepage": "https://github.com/nadeemramsing/nr-angular-pagination",
+  "authors": [
+    "Nadeem Ramsing <nadeem.ramsing@chb-technologies.ch>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "dev",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.6.9",
+    "angular-material": "^1.1.7"
+  }
+}
