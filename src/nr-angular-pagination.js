@@ -7,18 +7,25 @@
         .component('pagination', {
             bindings: {
                 data: '=',
-                view: '='
+                view: '=',
+                callback: '&'
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
             controllerAs: 'vm'
         });
 
-    function PaginationController() {
+    function PaginationController($timeout) {
         var vm = this;
 
         this.$onInit = function () {
-            debugger;
+            init();
+        };
+
+        function init() {
+            $timeout(function() {
+                vm.callback();
+            }, 5000);
         }
 
     }

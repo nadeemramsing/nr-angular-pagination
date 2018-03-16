@@ -10,8 +10,11 @@
         .controller('DemoController', DemoController);
 
     /* @ngInject */
-    function DemoController() {
-
+    function DemoController($scope) {
+        $scope.displayRamsing = function() {
+            $scope.nadeem = "Ramsing";
+            debugger;
+        }
     }
 
 })();

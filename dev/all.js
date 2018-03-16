@@ -2,23 +2,31 @@
 
     'use strict';
 
+    PaginationController.$inject = ["$timeout"];
     angular
         .module('NrAngularPagination', [])
         .component('pagination', {
             bindings: {
                 data: '=',
-                view: '='
+                view: '=',
+                callback: '&'
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
             controllerAs: 'vm'
         });
 
-    function PaginationController() {
+    function PaginationController($timeout) {
         var vm = this;
 
         this.$onInit = function () {
-            debugger;
+            init();
+        };
+
+        function init() {
+            $timeout(function() {
+                vm.callback();
+            }, 5000);
         }
 
     }
@@ -31,6 +39,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 
     'use strict';
 
+    DemoController.$inject = ["$scope"];
     angular
         .module('Demo', [
             'ngMaterial',
@@ -39,8 +48,11 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         .controller('DemoController', DemoController);
 
     /* @ngInject */
-    function DemoController() {
-
+    function DemoController($scope) {
+        $scope.displayRamsing = function() {
+            $scope.nadeem = "Ramsing";
+            debugger;
+        }
     }
 
 })();
