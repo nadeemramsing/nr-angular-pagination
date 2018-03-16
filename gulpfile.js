@@ -20,7 +20,7 @@ gulp.task('default', ['build'], function () {
 
 });
 
-gulp.task('build', ['index', 'cleanup'], function () {
+gulp.task('build', ['index', 'cleanup', 'vendor-js'], function () {
 
 });
 
@@ -31,13 +31,13 @@ gulp.task('index', function (cb) {
     return gulp
         .src('src/demo/index.html')
         .pipe(versionAppend(['html', 'js', 'css']))
-        .pipe(gulpif(!dist, embedlr()))
-        .pipe(gulpif(dist, gulp.dest('dist'), gulp.dest('dev')));
+        .pipe(embedlr())
+        .pipe(gulp.dest('dev'));
 });
 
 gulp.task('concat-js-html-css', ['js', 'html', 'css'], function () {
     return gulp
-        .src(dist ? 'dist/**/*.js' : 'dev/**/*.js')
+        .src(dist ? 'dist/**/*.temp.js' : 'dev/**/*.temp.js')
         .pipe(concat(dist ? 'nr-angular-pagination.min.js' : 'all.js'))
         .pipe(gulpif(dist, gulp.dest('dist'), gulp.dest('dev')));
 });
@@ -81,11 +81,27 @@ gulp.task('demo-js', function (cb) {
         .src('src/demo/index.js')
         .pipe(concat('4_js.temp.js'))
         .pipe(ngAnnotate())
-        .pipe(gulpif(dist, uglify()))
-        .pipe(gulpif(dist, gulp.dest('dist'), gulp.dest('dev')));
+        .pipe(uglify())
+        .pipe(gulp.dest('dev'));
 });
 
 gulp.task('cleanup', ['concat-js-html-css'], function () {
     return del([dist ? 'dist/*.temp.js' : 'dev/*.temp.js'])
         .catch(err => { throw err })
+});
+
+gulp.task('vendor-js', function (cb) {
+    if (dist)
+        return cb();
+
+    return gulp
+        .src([
+            'bower_components/angular/angular.min.js',
+            'bower_components/angular-animate/angular-animate.min.js',
+            'bower_components/angular-aria/angular-aria.min.js',
+            'bower_components/angular-messages/angular-messages.min.js',
+            'bower_components/angular-material/angular-material.min.js'
+        ])
+        .pipe(concat('vendor.js'))
+        .pipe(gulp.dest('dev'));
 });

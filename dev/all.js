@@ -10,11 +10,4 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 "undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,".test {\n" +
 "    opacity: 0.5;\n" +
 "}");
-(function () {
-
-    'use strict';
-
-    angular
-        .module('Demo', []);
-
-})();
+!function(){"use strict";angular.module("Demo",[])}();
