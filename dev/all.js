@@ -51,7 +51,6 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
     function DemoController($scope) {
         $scope.displayRamsing = function() {
             $scope.nadeem = "Ramsing";
-            debugger;
         }
     }
 

@@ -13,7 +13,6 @@
     function DemoController($scope) {
         $scope.displayRamsing = function() {
             $scope.nadeem = "Ramsing";
-            debugger;
         }
     }
 
