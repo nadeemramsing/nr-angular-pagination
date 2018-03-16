@@ -26,6 +26,7 @@
     "gulp-embedlr": "^0.5.2",
     "gulp-htmlmin": "^4.0.0",
     "gulp-if": "^2.0.2",
+    "gulp-live-server": "0.0.31",
     "gulp-ng-annotate": "^2.1.0",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
