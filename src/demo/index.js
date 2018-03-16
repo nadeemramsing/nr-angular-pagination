@@ -3,6 +3,12 @@
     'use strict';
 
     angular
-        .module('Demo', []);
+        .module('Demo', ['ngMaterial'])
+        .controller('DemoController', DemoController);
+
+    /* @ngInject */
+    function DemoController() {
+
+    }
 
 })();
