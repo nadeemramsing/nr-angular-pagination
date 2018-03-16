@@ -3,7 +3,10 @@
     'use strict';
 
     angular
-        .module('Demo', ['ngMaterial'])
+        .module('Demo', [
+            'ngMaterial',
+            'NrAngularPagination'
+        ])
         .controller('DemoController', DemoController);
 
     /* @ngInject */
