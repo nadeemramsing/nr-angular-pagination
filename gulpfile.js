@@ -104,7 +104,6 @@ gulp.task('demo-js', function (cb) {
         .src('src/demo/index.js')
         .pipe(concat('4_js.temp.js'))
         .pipe(ngAnnotate())
-        .pipe(uglify())
         .pipe(gulp.dest('dev'));
 });
 
