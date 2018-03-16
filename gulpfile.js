@@ -16,11 +16,13 @@ var
     util = require('gulp-util'),
     versionAppend = require('gulp-version-append'),
 
-    dist = util.env.dist,
-    server = gls.static(dist ? 'dist' : 'dev', 7500);
+    dist = util.env.dist;
 
 /* INIT */
-server.start();
+if (!dist) {
+    var server = gls.static('dev', 7500);
+    server.start();
+}
 
 gulp.task('default', function () {
     if (dist) {

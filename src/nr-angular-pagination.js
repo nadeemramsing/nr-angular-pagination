@@ -9,13 +9,17 @@
                 data: '=',
                 view: '='
             },
-
             templateUrl: 'tpl/nr-angular-pagination.html',
-
-            controller: PaginationController
+            controller: PaginationController,
+            controllerAs: 'vm'
         });
 
     function PaginationController() {
-        debugger;
+        var vm = this;
+
+        this.$onInit = function () {
+            debugger;
+        }
+
     }
 })();
