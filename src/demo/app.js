@@ -3511,6 +3511,19 @@ const
 
 app.use(morgan('dev'));
 
+//enableCors
+app.use(function (req, res, next) {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-auth-token, x-client-id");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+
+    if (req.method === 'OPTIONS') {
+        res.end();
+    } else
+        next();
+});
+
 app.get('/api/comments', (req, res) => {
     var skip = parseInt(req.query.skip),
         limit = parseInt(req.query.limit);

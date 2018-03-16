@@ -8,15 +8,40 @@
     <link rel="stylesheet" type="text/css" href="vendor.css?v=@version@">
 </head>
 
-<body ui-view layout="column" ng-cloak style="overflow-y:hidden">
-    <button class="test" aria-label="TEST"> {{nadeem}} </button>
+<body ui-view layout="column" ng-cloak>
 
-    <md-input-container>
-        <label>Nadeem</label>
-        <input ng-model="nadeem">
-    </md-input-container>
+    <md-list>
+        <md-list-item class="md-2-line">
+            <div class="md-list-item-text" layout="row" layout-align="start center">
+                <span flex>ID</span>
+                <span flex>NAME</span>
+                <span flex>EMAIL</span>
+            </div>
+        </md-list-item>
+        <md-list-item class="md-2-line" ng-repeat="comment in comments">
+            <div class="md-list-item-text" layout="row" layout-align="start center">
+                <span flex>{{comment.id}}</span>
+                <span flex>{{comment.name}}</span>
+                <span flex>{{comment.email}}</span>
+            </div>
+        </md-list-item>
+    </md-list>
 
-    <pagination data="{data: 'data'}" view="{view: 'view'}" callback="displayRamsing()"></pagination>
+    <!--  <div layout="column">
+        <div>
+            <span flex>id</span>
+            <span flex>name</span>
+            <span flex>email</span>
+        </div>
+
+        <div ng-repeat="comment in comments track by comment.id">
+            <span flex>{{comment.id}}</span>
+            <span flex>{{comment.name}}</span>
+            <span flex>{{comment.email}}</span>
+        </div>
+    </div> -->
+
+    <pagination data="" view=""></pagination>
 </body>
 
 <script src="vendor.js?v=@version@"></script>

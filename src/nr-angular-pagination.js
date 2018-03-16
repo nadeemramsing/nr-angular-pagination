@@ -7,8 +7,7 @@
         .component('pagination', {
             bindings: {
                 data: '=',
-                view: '=',
-                callback: '&'
+                view: '='
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
@@ -19,14 +18,7 @@
         var vm = this;
 
         this.$onInit = function () {
-            init();
+
         };
-
-        function init() {
-            $timeout(function() {
-                vm.callback();
-            }, 5000);
-        }
-
     }
 })();

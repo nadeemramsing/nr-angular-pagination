@@ -8,8 +8,7 @@
         .component('pagination', {
             bindings: {
                 data: '=',
-                view: '=',
-                callback: '&'
+                view: '='
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
@@ -20,15 +19,8 @@
         var vm = this;
 
         this.$onInit = function () {
-            init();
+
         };
-
-        function init() {
-            $timeout(function() {
-                vm.callback();
-            }, 5000);
-        }
-
     }
 })();
 angular.module('NrAngularPagination').run(['$templateCache', function($templateCache) {$templateCache.put('tpl/nr-angular-pagination.html','<div class="test">\r\n    {{vm.data}} {{vm.view}}\r\n</div>');}]);
@@ -39,7 +31,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 
     'use strict';
 
-    DemoController.$inject = ["$scope"];
+    DemoController.$inject = ["$scope", "$http", "$httpParamSerializer"];
     angular
         .module('Demo', [
             'ngMaterial',
@@ -48,8 +40,38 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         .controller('DemoController', DemoController);
 
     /* @ngInject */
-    function DemoController($scope) {
-        $scope.displayRamsing = function() {
+    function DemoController($scope, $http, $httpParamSerializer) {
+
+        $scope.comments = [];
+
+        $scope.displayRamsing = displayRamsing;
+
+        /* INIT */
+        getComments({ limit: 50 });
+
+        /* FUNCTION DECLARATIONS */
+        function getComments(query) {
+            var qs = qs = $httpParamSerializer(query),
+                url = 'http://localhost:4000/api/comments?' + qs;
+
+            $http.get(url).then(function (response) {
+                $scope.comments = response.data;
+            });
+
+            /* fetch(url)
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                //does not work
+                $scope.comments = data;
+                })
+                .catch(function (err) {
+                    console.error(err);
+                }); */
+        }
+
+        function displayRamsing() {
             $scope.nadeem = "Ramsing";
         }
     }
