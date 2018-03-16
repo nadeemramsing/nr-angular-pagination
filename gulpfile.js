@@ -24,7 +24,10 @@ gulp.task('build', ['index', 'cleanup'], function () {
 
 });
 
-gulp.task('index', function () {
+gulp.task('index', function (cb) {
+    if (dist)
+        return cb();
+
     return gulp
         .src('src/demo/index.html')
         .pipe(versionAppend(['html', 'js', 'css']))
@@ -70,7 +73,10 @@ gulp.task('css', function () {
         .pipe(gulpif(dist, gulp.dest('dist'), gulp.dest('dev')));
 });
 
-gulp.task('demo-js', function () {
+gulp.task('demo-js', function (cb) {
+    if (dist)
+        return cb();
+
     return gulp
         .src('src/demo/index.js')
         .pipe(concat('4_js.temp.js'))
@@ -81,5 +87,5 @@ gulp.task('demo-js', function () {
 
 gulp.task('cleanup', ['concat-js-html-css'], function () {
     return del([dist ? 'dist/*.temp.js' : 'dev/*.temp.js'])
-        .catch(err => {throw err})
+        .catch(err => { throw err })
 });
