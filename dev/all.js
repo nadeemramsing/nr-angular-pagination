@@ -249,6 +249,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         $scope.comments = [];
 
         $scope.getComments = getComments;
+        $scope.searchComments = searchComments;
 
         /* INIT */
         getComments({ limit: $scope.paginationOptions.query.limit });
@@ -279,6 +280,10 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
             return $http.get(BASEURL + '/count').then(function (response) {
                 return response.data.count;
             });
+        }
+
+        function searchComments(searchText) {
+            getComments(Object.assign({}, $scope.paginationOptions.query, { text: searchText }));
         }
 
     }
