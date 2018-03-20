@@ -12,9 +12,13 @@
     /* @ngInject */
     function DemoController($scope, $http, $httpParamSerializer) {
 
-        $scope.comments = [];
+        var BASEURL = 'http://localhost:4000/api/comments';
 
-        $scope.displayRamsing = displayRamsing;
+        $scope.paginationData = {
+            'listTotal': getCommentsCount,
+            'query': { skip: 0, limit: 10 }
+        };
+        $scope.comments = [];
 
         /* INIT */
         getComments({ limit: 50 });
@@ -22,7 +26,7 @@
         /* FUNCTION DECLARATIONS */
         function getComments(query) {
             var qs = qs = $httpParamSerializer(query),
-                url = 'http://localhost:4000/api/comments?' + qs;
+                url = BASEURL + '?' + qs;
 
             $http.get(url).then(function (response) {
                 $scope.comments = response.data;
@@ -41,9 +45,12 @@
                 }); */
         }
 
-        function displayRamsing() {
-            $scope.nadeem = "Ramsing";
+        function getCommentsCount() {
+            return $http.get(BASEURL + '/count').then(function (response) {
+                return response.data.count;
+            });
         }
+
     }
 
 })();

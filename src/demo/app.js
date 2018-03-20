@@ -3536,6 +3536,13 @@ app.get('/api/comments', (req, res) => {
     );
 });
 
+app.get('/api/comments/count', (req, res) => {
+    var skip = parseInt(req.query.skip),
+        limit = parseInt(req.query.limit);
+
+    res.send({ count: data.length });
+});
+
 app.use('/api', (req, res) => {
     res.send('Welcome to Dummy RESTful API\n' + req.originalUrl);
 });
