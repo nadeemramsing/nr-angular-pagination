@@ -40,8 +40,11 @@
         $scope.$on('paginationListener', function (event, args) {
             operation = args.operation;
 
-            if (args.reload)
+            if (args.reload) {
+                jumpToPage(1);
                 getCount();
+            }
+
         });
 
         this.$onInit = function () {
@@ -51,7 +54,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            vm.options.getCount({ operation: operation }).then(function (countArg) {
+            return vm.options.getCount({ operation: operation }).then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -65,7 +68,7 @@
             else
                 jumpToPage(vm.currentPage);
 
-            vm.onLimitChange({ limit: vm.options.query.limit });
+            return vm.onLimitChange({ limit: vm.options.query.limit });
         }
 
         function getButtons(count) {
@@ -88,7 +91,7 @@
             if ((vm.options.query.skip + vm.options.query.limit) < count) {
                 vm.options.query.skip += vm.options.query.limit;
             }
-            changePage();
+            return changePage();
         }
 
         function prevPage() {
@@ -98,25 +101,25 @@
             if ((vm.options.query.skip - vm.options.query.limit) >= 0) {
                 vm.options.query.skip -= vm.options.query.limit;
             }
-            changePage();
+            return changePage();
         }
 
         function firstPage() {
-            jumpToPage(1);
+            return jumpToPage(1);
         }
 
         function lastPage() {
-            jumpToPage(vm.totalButtons);
+            return jumpToPage(vm.totalButtons);
         }
 
         function jumpToPage(pageNum) {
             vm.currentPage = pageNum;
             vm.options.query.skip = (pageNum - 1) * vm.options.query.limit;
-            changePage();
+            return changePage();
         }
 
         function changePage() {
-            vm.onPageChange({ query: vm.options.query, operation: operation });
+            return vm.onPageChange({ query: vm.options.query, operation: operation });
         }
 
         var jumper = 20,
@@ -258,11 +261,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 
         /* FUNCTION DECLARATIONS */
         function onPageChange(query, operation) {
-            if (operation === 'default')
-                getComments(query);
-
-            if (operation === 'search')
-                searchComments();
+            return getComments(query);
         }
 
         function getComments(query) {
@@ -290,13 +289,10 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         }
 
         function searchComments() {
-            getComments($scope.paginationOptions.query)
-                .then(function () {
-                    $scope.$broadcast('paginationListener', {
-                        operation: 'search',
-                        reload: true
-                    });
-                });
+            $scope.$broadcast('paginationListener', {
+                operation: 'search',
+                reload: true
+            });
         }
 
     }

@@ -28,11 +28,7 @@
 
         /* FUNCTION DECLARATIONS */
         function onPageChange(query, operation) {
-            if (operation === 'default')
-                getComments(query);
-
-            if (operation === 'search')
-                searchComments();
+            return getComments(query);
         }
 
         function getComments(query) {
@@ -60,13 +56,10 @@
         }
 
         function searchComments() {
-            getComments($scope.paginationOptions.query)
-                .then(function () {
-                    $scope.$broadcast('paginationListener', {
-                        operation: 'search',
-                        reload: true
-                    });
-                });
+            $scope.$broadcast('paginationListener', {
+                operation: 'search',
+                reload: true
+            });
         }
 
     }
