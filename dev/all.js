@@ -9,7 +9,8 @@
             bindings: {
                 options: '=',
                 onPageChange: '&',
-                onCountChange: '&'
+                onCountChange: '&',
+                onLimitChange: '&'
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
@@ -31,57 +32,15 @@
         vm.prevPage = prevPage;
         vm.show = show;
 
+        /* LOCAL VARIABLES */
         var count = 0,
             operation = '',
             query = {};
 
         /* LISTENER */
-        $scope.$on('pagination-listener', function (event, args) {
+        $scope.$on('paginationListener', function (event, args) {
 
         });
-
-        /* $scope.$on('refresh', function (event, args) {
-            vm.options.getCount(args.query).then(function (response) {
-                getButtons(parseInt(response.data));
-                firstPage();
-            })
-        });
-
-        $scope.$on("onAdvancedSearchCount", function (event, args) {
-            getButtons(args.count);
-            query = args.query;
-            operation = "advancedsearch";
-
-            if (args.query && args.query.skip === 0) {
-                vm.currentPage = 1;
-                vm.options.query.skip = 0;
-            }
-
-            //init
-            if (!args.query.skip)
-                vm.options.updateFooter(args.count, null, vm.options.query.limit, true);
-        });
-
-        $scope.$on("onSearch", function (event, args) {
-            //Scenario for first condition set: After advanced search, displayed query removed.
-            if ((args.count && !args.query) || (args.query && args.query.skip === 0) || args.groupMode) {
-                vm.currentPage = 1;
-                vm.options.query.skip = 0;
-            }
-
-            if (args.loadPagination) {
-                getButtons(args.count);
-                operation = null;
-            } else {
-                getButtons(args.count);
-                operation = "search";
-            }
-            query = args.query;
-
-            //init
-            if (args.loadPagination || (args.query && args.query.skip === 0) || args.groupMode)
-                vm.options.updateFooter(args.count, null, vm.options.query.limit, true);
-        }); */
 
         this.$onInit = function () {
             handleOptions();
@@ -104,11 +63,7 @@
             else
                 jumpToPage(vm.currentPage);
 
-            PropertiesStoreService.changeLimit(vm.options.query.limit)
-                .then(function (response) { })
-                .catch(function (err) {
-                    console.error(err);
-                })
+            vm.onLimitChange({ limit: vm.options.query.limit });
         }
 
         function getButtons(count) {
@@ -131,7 +86,7 @@
             if ((vm.options.query.skip + vm.options.query.limit) < count) {
                 vm.options.query.skip += vm.options.query.limit;
             }
-            emitList();
+            changePage();
         }
 
         function prevPage() {
@@ -141,7 +96,7 @@
             if ((vm.options.query.skip - vm.options.query.limit) >= 0) {
                 vm.options.query.skip -= vm.options.query.limit;
             }
-            emitList();
+            changePage();
         }
 
         function firstPage() {
@@ -153,20 +108,12 @@
         }
 
         function jumpToPage(pageNum) {
-
-            if (vm.options.scrollToTop)
-                vm.options.scrollToTop();
-
             vm.currentPage = pageNum;
             vm.options.query.skip = (pageNum - 1) * vm.options.query.limit;
-            emitList();
+            changePage();
         }
 
-        function emitList() {
-            var options = {
-                'operation': operation || vm.operation,
-            };
-
+        function changePage() {
             vm.onPageChange({ query: vm.options.query });
         }
 
