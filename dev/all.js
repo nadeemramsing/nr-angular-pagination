@@ -41,7 +41,7 @@
         });
 
         /* $scope.$on('refresh', function (event, args) {
-            vm.options.listTotal(args.query).then(function (response) {
+            vm.options.getCount(args.query).then(function (response) {
                 getButtons(parseInt(response.data));
                 firstPage();
             })
@@ -85,21 +85,17 @@
 
         this.$onInit = function () {
             handleOptions();
-
-            if (vm.options) {
-                if (vm.options.hasOwnProperty('listTotal')) {
-                    vm.options.listTotal(vm.options.query).then(function (count) {
-                        count = typeof count === 'number' ? count : parseInt(count);
-                        getButtons(count);
-
-                        if (vm.options.hasOwnProperty('updateFooter'))
-                            vm.options.updateFooter(count, null, vm.options.query.limit, true);
-                    });
-                }
-            }
+            getCount();
         };
 
         /* FUNCTION DECLARATIONS */
+        function getCount() {
+            vm.options.getCount(vm.options.query).then(function (countArg) {
+                count = typeof countArg === 'number' ? countArg : parseInt(countArg);
+                getButtons(count);
+            });
+        }
+
         function changeLimit() {
             getButtons(count);
 
@@ -116,21 +112,16 @@
         }
 
         function getButtons(count) {
-            if (typeof count === "string" && util.isParsableToNumber(count))
-                count = parseInt(count);
-
-            vm.totalButtons = ((count + (vm.options.query.limit - 1)) - (count + (vm.options.query.limit - 1)) % (vm.options.query.limit)) / vm.options.query.limit;
-
-            if (count === 0) {
+            if (count === 0)
                 vm.totalButtons = 1;
-            }
+            else
+                vm.totalButtons = ((count + (vm.options.query.limit - 1)) - (count + (vm.options.query.limit - 1)) % (vm.options.query.limit)) / vm.options.query.limit;
 
-            vm.pages.length = 0;
+            vm.pages = [];
 
-            for (var i = 1; i <= vm.totalButtons; i++) {
+            _.times(vm.totalButtons, function (i) {
                 vm.pages.push(i);
-            }
-
+            });
         }
 
         function nextPage() {
@@ -226,17 +217,29 @@
 
         /* HELPER FUNCTIONS */
         function handleOptions() {
-            var options = Object.keys(vm.options),
-                requiredOptions = [
-                    'getCount',
-                    'listTotal',
-                    'query'
-                ];
+            var requiredOptions = [
+                'getCount',
+                'query'
+            ];
 
-            var missingOptions = _.difference(requiredOptions, options);
+            checkDifference(vm.options, requiredOptions, 'options');
+
+            var requiredQueryOptions = [
+                'skip',
+                'limit'
+            ];
+
+            checkDifference(vm.options.query, requiredQueryOptions, 'options.query');
+        }
+
+        function checkDifference(options, requiredOptions, path) {
+            var keys = Object.keys(options),
+                missingOptions = _.difference(requiredOptions, keys);
 
             if (missingOptions.length !== 0)
-                throw new Error('Required options missing for NrAngularPagination component: ' + missingOptions.join(', '));
+                throw new Error('Required options missing for NrAngularPagination component: ' + missingOptions
+                    .map(function (str) { return path + '.' + str })
+                    .join(', '));
         }
 
     }
@@ -314,8 +317,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         var BASEURL = 'http://localhost:4000/api/comments';
 
         $scope.paginationOptions = {
-            'getCount': null,
-            'listTotal': getCommentsCount,
+            'getCount': getCommentsCount,
             'query': { skip: 0, limit: 10 }
         };
         $scope.comments = [];

@@ -15,8 +15,7 @@
         var BASEURL = 'http://localhost:4000/api/comments';
 
         $scope.paginationOptions = {
-            'getCount': null,
-            'listTotal': getCommentsCount,
+            'getCount': getCommentsCount,
             'query': { skip: 0, limit: 10 }
         };
         $scope.comments = [];
