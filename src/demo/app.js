@@ -3526,10 +3526,12 @@ app.use(function (req, res, next) {
 
 app.get('/api/comments', (req, res) => {
     var skip = parseInt(req.query.skip),
-        limit = parseInt(req.query.limit);
+        limit = parseInt(req.query.limit),
+        text = RegExp(req.query.text, 'i');
 
     res.send(
         _.chain(data)
+            .filter(comment => comment.name.match(text) || comment.email.match(text) || comment.body.match(text))
             .drop(skip || 0)
             .take(limit || data.length)
             .value()
@@ -3537,9 +3539,6 @@ app.get('/api/comments', (req, res) => {
 });
 
 app.get('/api/comments/count', (req, res) => {
-    var skip = parseInt(req.query.skip),
-        limit = parseInt(req.query.limit);
-
     res.send({ count: data.length });
 });
 
