@@ -120,6 +120,7 @@ gulp.task('vendor-js', function (cb) {
 
     return gulp
         .src([
+            'bower_components/lodash/dist/lodash.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular-animate/angular-animate.min.js',
             'bower_components/angular-aria/angular-aria.min.js',
