@@ -117,10 +117,10 @@
             else
                 vm.totalButtons = ((count + (vm.options.query.limit - 1)) - (count + (vm.options.query.limit - 1)) % (vm.options.query.limit)) / vm.options.query.limit;
 
-            vm.pages = [];
+            vm.pages.length = 0; //emptying original array
 
             _.times(vm.totalButtons, function (i) {
-                vm.pages.push(i);
+                vm.pages.push(i + 1);
             });
         }
 
@@ -163,32 +163,11 @@
         }
 
         function emitList() {
-            if (query) {
-                query.skip = vm.options.query.skip;
-                query.limit = vm.options.query.limit;
-            }
-
-            if (vm.options.hasOwnProperty('updateFooter')) {
-                if (vm.currentPage === vm.pages[vm.pages.length - 1])
-                    vm.options.updateFooter(count % vm.options.query.limit, vm.options.query.skip);
-                else
-                    vm.options.updateFooter(null, vm.options.query.skip, vm.options.query.limit);
-            }
-
             var options = {
-                'limit': vm.options.query.limit,
-                'skip': vm.options.query.skip,
                 'operation': operation || vm.operation,
-                'query': query
             };
 
-            //extended behavior to avoid using listeners
-            if (vm.options.apiCall) {
-                vm.options.apiCall(options);
-                return;
-            }
-
-            $scope.$emit('refreshList', options);
+            vm.onPageChange({ query: vm.options.query });
         }
 
         var jumper = 20,
@@ -322,8 +301,10 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         };
         $scope.comments = [];
 
+        $scope.getComments = getComments;
+
         /* INIT */
-        getComments({ limit: 50 });
+        getComments({ limit: $scope.paginationOptions.query.limit });
 
         /* FUNCTION DECLARATIONS */
         function getComments(query) {

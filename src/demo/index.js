@@ -20,8 +20,10 @@
         };
         $scope.comments = [];
 
+        $scope.getComments = getComments;
+
         /* INIT */
-        getComments({ limit: 50 });
+        getComments({ limit: $scope.paginationOptions.query.limit });
 
         /* FUNCTION DECLARATIONS */
         function getComments(query) {
