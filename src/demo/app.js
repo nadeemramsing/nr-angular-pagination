@@ -3527,7 +3527,7 @@ app.use(function (req, res, next) {
 app.get('/api/comments', (req, res) => {
     var skip = parseInt(req.query.skip),
         limit = parseInt(req.query.limit),
-        text = RegExp(req.query.text, 'i');
+        text = RegExp(req.query.searchText, 'i');
 
     res.send(
         _.chain(data)
@@ -3539,7 +3539,10 @@ app.get('/api/comments', (req, res) => {
 });
 
 app.get('/api/comments/count', (req, res) => {
-    res.send({ count: data.length });
+    var text = RegExp(req.query.searchText, 'i'),
+        result = _.filter(data, comment => comment.name.match(text) || comment.email.match(text) || comment.body.match(text));
+
+    res.send({ count: result.length });
 });
 
 app.use('/api', (req, res) => {

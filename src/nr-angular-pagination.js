@@ -33,12 +33,14 @@
 
         /* LOCAL VARIABLES */
         var count = 0,
-            operation = '',
-            query = {};
+            operation = 'default';
 
         /* LISTENER */
         $scope.$on('paginationListener', function (event, args) {
+            operation = args.operation;
 
+            if (args.reload)
+                getCount();
         });
 
         this.$onInit = function () {
@@ -48,7 +50,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            vm.options.getCount(vm.options.query).then(function (countArg) {
+            vm.options.getCount({ operation: operation }).then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -113,7 +115,7 @@
         }
 
         function changePage() {
-            vm.onPageChange({ query: vm.options.query });
+            vm.onPageChange({ query: vm.options.query, operation: operation });
         }
 
         var jumper = 20,
