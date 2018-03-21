@@ -32,16 +32,18 @@
         vm.show = show;
 
         /* LOCAL VARIABLES */
-        var count = 0,
+        var
+            additionalQuery = {},
+            count = 0,
             operation = 'default',
-            additionalQuery = {};
+            resetOperations = ['reset-search'];
 
         /* LISTENER */
         $scope.$on('paginationListener', function (event, args) {
             operation = args.operation || operation;
             additionalQuery = args.additionalQuery || additionalQuery;
 
-            if (args.operation === 'reset-search')
+            if (resetOperations.includes(args.operation))
                 removeAdditionalQuery();
 
             if (args.reload)
