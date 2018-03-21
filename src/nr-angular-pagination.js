@@ -32,16 +32,20 @@
 
         /* LOCAL VARIABLES */
         var count = 0,
-            operation = 'default';
+            operation = 'default',
+            additionalQuery = {};
 
         /* LISTENER */
         $scope.$on('paginationListener', function (event, args) {
-            operation = args.operation;
+            operation = args.operation || operation;
+            additionalQuery = args.additionalQuery || additionalQuery;
+
+            if (args.operation === 'reset-search')
+                removeAdditionalQuery();
 
             if (args.reload)
                 jumpToPage(1, {
-                    reload: true,
-                    query: args.query
+                    reload: true
                 });
 
             if (args.count)
@@ -126,8 +130,7 @@
             return vm.onPageChange({
                 options: {
                     operation: operation,
-                    //overwrites skip and limit according to pagination
-                    query: Object.assign({}, options.query, vm.options.query),
+                    query: Object.assign({}, additionalQuery, vm.options.query),
                     reload: options.reload
                 }
             });
@@ -158,6 +161,10 @@
         }
 
         /* HELPER FUNCTIONS */
+        function removeAdditionalQuery() {
+            additionalQuery = {};
+        }
+
         function handleOptions() {
             var requiredOptions = [
                 'getCount',

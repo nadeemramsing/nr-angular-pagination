@@ -54,13 +54,12 @@
 
             if ($scope.paginationOptions.searchText === '')
                 args = {
-                    query: $scope.paginationOptions.query,
                     operation: 'reset-search',
                     reload: true
                 };
             else
                 args = {
-                    query: Object.assign({}, $scope.paginationOptions.query, { searchText: $scope.paginationOptions.searchText }),
+                    additionalQuery: { searchText: $scope.paginationOptions.searchText },
                     operation: 'normal-search',
                     reload: true
                 };
