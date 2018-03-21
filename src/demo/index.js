@@ -16,7 +16,8 @@
 
         $scope.paginationOptions = {
             'getCount': getCommentsCount,
-            'query': { skip: 0, limit: 5 }
+            'query': { skip: 0, limit: 5 },
+            'searchText': ''
         };
         $scope.comments = [];
 
@@ -36,7 +37,7 @@
             promises.getComments = getComments(options.query);
 
             if (options.reload)
-                promises.getCommentsCount = getCommentsCount($scope.paginationOptions.query);
+                promises.getCommentsCount = getCommentsCount(options.query);
 
             $q.all(promises).then(function (responses) {
                 $scope.comments = responses.getComments.data;
@@ -48,13 +49,25 @@
             });
         }
 
-        function searchComments() {
-            $scope.$broadcast('paginationListener', {
-                operation: 'search',
-                reload: true
-            });
+        function searchComments(event) {
+            var args = {};
+
+            if ($scope.paginationOptions.searchText === '')
+                args = {
+                    query: $scope.paginationOptions.query,
+                    operation: 'reset-search',
+                    reload: true
+                };
+            else
+                args = {
+                    query: Object.assign({}, $scope.paginationOptions.query, { searchText: $scope.paginationOptions.searchText }),
+                    operation: 'normal-search',
+                    reload: true
+                };
+
+            $scope.$broadcast('paginationListener', args);
         }
-        
+
         /* SERVICE */
         function getComments(query) {
             var qs = qs = $httpParamSerializer(query),

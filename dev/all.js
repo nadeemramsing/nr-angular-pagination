@@ -40,7 +40,10 @@
             operation = args.operation;
 
             if (args.reload)
-                jumpToPage(1, { reload: true });
+                jumpToPage(1, {
+                    reload: true,
+                    query: args.query
+                });
 
             if (args.count)
                 getButtons(args.count);
@@ -76,7 +79,8 @@
             else
                 vm.totalButtons = ((count + (vm.options.query.limit - 1)) - (count + (vm.options.query.limit - 1)) % (vm.options.query.limit)) / vm.options.query.limit;
 
-            vm.pages.length = 0; //emptying original array
+            //emptying original array
+            vm.pages.length = 0;
 
             _.times(vm.totalButtons, function (i) {
                 vm.pages.push(i + 1);
@@ -118,14 +122,15 @@
         }
 
         function changePage(options) {
+            options = options || {};
+
             return vm.onPageChange({
-                options: Object.assign(
-                    {
-                        query: vm.options.query,
-                        operation: operation
-                    },
-                    options
-                )
+                options: {
+                    operation: operation,
+                    //overwrites skip and limit according to pagination
+                    query: Object.assign({}, options.query, vm.options.query),
+                    reload: options.reload
+                }
             });
         }
 
@@ -256,7 +261,8 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 
         $scope.paginationOptions = {
             'getCount': getCommentsCount,
-            'query': { skip: 0, limit: 5 }
+            'query': { skip: 0, limit: 5 },
+            'searchText': ''
         };
         $scope.comments = [];
 
@@ -276,7 +282,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
             promises.getComments = getComments(options.query);
 
             if (options.reload)
-                promises.getCommentsCount = getCommentsCount($scope.paginationOptions.query);
+                promises.getCommentsCount = getCommentsCount(options.query);
 
             $q.all(promises).then(function (responses) {
                 $scope.comments = responses.getComments.data;
@@ -288,13 +294,25 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
             });
         }
 
-        function searchComments() {
-            $scope.$broadcast('paginationListener', {
-                operation: 'search',
-                reload: true
-            });
+        function searchComments(event) {
+            var args = {};
+
+            if ($scope.paginationOptions.searchText === '')
+                args = {
+                    query: $scope.paginationOptions.query,
+                    operation: 'reset-search',
+                    reload: true
+                };
+            else
+                args = {
+                    query: Object.assign({}, $scope.paginationOptions.query, { searchText: $scope.paginationOptions.searchText }),
+                    operation: 'normal-search',
+                    reload: true
+                };
+
+            $scope.$broadcast('paginationListener', args);
         }
-        
+
         /* SERVICE */
         function getComments(query) {
             var qs = qs = $httpParamSerializer(query),

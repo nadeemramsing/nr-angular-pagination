@@ -39,7 +39,10 @@
             operation = args.operation;
 
             if (args.reload)
-                jumpToPage(1, { reload: true });
+                jumpToPage(1, {
+                    reload: true,
+                    query: args.query
+                });
 
             if (args.count)
                 getButtons(args.count);
@@ -75,7 +78,8 @@
             else
                 vm.totalButtons = ((count + (vm.options.query.limit - 1)) - (count + (vm.options.query.limit - 1)) % (vm.options.query.limit)) / vm.options.query.limit;
 
-            vm.pages.length = 0; //emptying original array
+            //emptying original array
+            vm.pages.length = 0;
 
             _.times(vm.totalButtons, function (i) {
                 vm.pages.push(i + 1);
@@ -117,14 +121,15 @@
         }
 
         function changePage(options) {
+            options = options || {};
+
             return vm.onPageChange({
-                options: Object.assign(
-                    {
-                        query: vm.options.query,
-                        operation: operation
-                    },
-                    options
-                )
+                options: {
+                    operation: operation,
+                    //overwrites skip and limit according to pagination
+                    query: Object.assign({}, options.query, vm.options.query),
+                    reload: options.reload
+                }
             });
         }
 
