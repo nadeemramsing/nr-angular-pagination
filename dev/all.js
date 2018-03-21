@@ -9,7 +9,6 @@
             bindings: {
                 options: '=',
                 onPageChange: '&',
-                onCountChange: '&',
                 onLimitChange: '&'
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
@@ -40,11 +39,11 @@
         $scope.$on('paginationListener', function (event, args) {
             operation = args.operation;
 
-            if (args.reload) {
-                jumpToPage(1);
-                getCount();
-            }
+            if (args.reload)
+                jumpToPage(1, { reload: true });
 
+            if (args.count)
+                getButtons(args.count);
         });
 
         this.$onInit = function () {
@@ -54,7 +53,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            return vm.options.getCount({ operation: operation }).then(function (countArg) {
+            return vm.options.getCount().then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -112,14 +111,22 @@
             return jumpToPage(vm.totalButtons);
         }
 
-        function jumpToPage(pageNum) {
+        function jumpToPage(pageNum, options) {
             vm.currentPage = pageNum;
             vm.options.query.skip = (pageNum - 1) * vm.options.query.limit;
-            return changePage();
+            return changePage(options);
         }
 
-        function changePage() {
-            return vm.onPageChange({ query: vm.options.query, operation: operation });
+        function changePage(options) {
+            return vm.onPageChange({
+                options: Object.assign(
+                    {
+                        query: vm.options.query,
+                        operation: operation
+                    },
+                    options
+                )
+            });
         }
 
         var jumper = 20,
@@ -234,7 +241,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
 
     'use strict';
 
-    DemoController.$inject = ["$scope", "$http", "$httpParamSerializer"];
+    DemoController.$inject = ["$scope", "$http", "$httpParamSerializer", "$q"];
     angular
         .module('Demo', [
             'ngMaterial',
@@ -243,7 +250,7 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         .controller('DemoController', DemoController);
 
     /* @ngInject */
-    function DemoController($scope, $http, $httpParamSerializer) {
+    function DemoController($scope, $http, $httpParamSerializer, $q) {
 
         var BASEURL = 'http://localhost:4000/api/comments';
 
@@ -257,34 +264,27 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         $scope.searchComments = searchComments;
 
         /* INIT */
-        getComments({ limit: $scope.paginationOptions.query.limit });
-
-        /* FUNCTION DECLARATIONS */
-        function onPageChange(query, operation) {
-            return getComments(query);
-        }
-
-        function getComments(query) {
-            var qs = qs = $httpParamSerializer(query),
-                url = BASEURL + '?' + qs;
-
-            return $http.get(url).then(function (response) {
+        getComments({ limit: $scope.paginationOptions.query.limit })
+            .then(function (response) {
                 $scope.comments = response.data;
             });
-        }
 
-        function getCommentsCount(options) {
-            if (options.operation === 'search') {
-                var qs = qs = $httpParamSerializer($scope.paginationOptions.query),
-                    url = BASEURL + '/count' + '?' + qs;
+        /* FUNCTION DECLARATIONS */
+        function onPageChange(options) {
+            var promises = {};
 
-                return $http.get(url).then(function (response) {
-                    return response.data.count;
-                });
-            }
+            promises.getComments = getComments(options.query);
 
-            return $http.get(BASEURL + '/count').then(function (response) {
-                return response.data.count;
+            if (options.reload)
+                promises.getCommentsCount = getCommentsCount($scope.paginationOptions.query);
+
+            $q.all(promises).then(function (responses) {
+                $scope.comments = responses.getComments.data;
+
+                if (responses.getCommentsCount)
+                    $scope.$broadcast('paginationListener', {
+                        count: responses.getCommentsCount
+                    });
             });
         }
 
@@ -294,7 +294,23 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
                 reload: true
             });
         }
+        
+        /* SERVICE */
+        function getComments(query) {
+            var qs = qs = $httpParamSerializer(query),
+                url = BASEURL + '?' + qs;
 
+            return $http.get(url);
+        }
+
+        function getCommentsCount(query) {
+            var qs = qs = $httpParamSerializer(query),
+                url = BASEURL + '/count' + '?' + qs;
+
+            return $http.get(url).then(function (response) {
+                return response.data.count;
+            });
+        }
     }
 
 })();

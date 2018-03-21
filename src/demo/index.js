@@ -10,7 +10,7 @@
         .controller('DemoController', DemoController);
 
     /* @ngInject */
-    function DemoController($scope, $http, $httpParamSerializer) {
+    function DemoController($scope, $http, $httpParamSerializer, $q) {
 
         var BASEURL = 'http://localhost:4000/api/comments';
 
@@ -24,34 +24,27 @@
         $scope.searchComments = searchComments;
 
         /* INIT */
-        getComments({ limit: $scope.paginationOptions.query.limit });
-
-        /* FUNCTION DECLARATIONS */
-        function onPageChange(query, operation) {
-            return getComments(query);
-        }
-
-        function getComments(query) {
-            var qs = qs = $httpParamSerializer(query),
-                url = BASEURL + '?' + qs;
-
-            return $http.get(url).then(function (response) {
+        getComments({ limit: $scope.paginationOptions.query.limit })
+            .then(function (response) {
                 $scope.comments = response.data;
             });
-        }
 
-        function getCommentsCount(options) {
-            if (options.operation === 'search') {
-                var qs = qs = $httpParamSerializer($scope.paginationOptions.query),
-                    url = BASEURL + '/count' + '?' + qs;
+        /* FUNCTION DECLARATIONS */
+        function onPageChange(options) {
+            var promises = {};
 
-                return $http.get(url).then(function (response) {
-                    return response.data.count;
-                });
-            }
+            promises.getComments = getComments(options.query);
 
-            return $http.get(BASEURL + '/count').then(function (response) {
-                return response.data.count;
+            if (options.reload)
+                promises.getCommentsCount = getCommentsCount($scope.paginationOptions.query);
+
+            $q.all(promises).then(function (responses) {
+                $scope.comments = responses.getComments.data;
+
+                if (responses.getCommentsCount)
+                    $scope.$broadcast('paginationListener', {
+                        count: responses.getCommentsCount
+                    });
             });
         }
 
@@ -61,7 +54,23 @@
                 reload: true
             });
         }
+        
+        /* SERVICE */
+        function getComments(query) {
+            var qs = qs = $httpParamSerializer(query),
+                url = BASEURL + '?' + qs;
 
+            return $http.get(url);
+        }
+
+        function getCommentsCount(query) {
+            var qs = qs = $httpParamSerializer(query),
+                url = BASEURL + '/count' + '?' + qs;
+
+            return $http.get(url).then(function (response) {
+                return response.data.count;
+            });
+        }
     }
 
 })();

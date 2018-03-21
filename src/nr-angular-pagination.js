@@ -8,7 +8,6 @@
             bindings: {
                 options: '=',
                 onPageChange: '&',
-                onCountChange: '&',
                 onLimitChange: '&'
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
@@ -39,11 +38,11 @@
         $scope.$on('paginationListener', function (event, args) {
             operation = args.operation;
 
-            if (args.reload) {
-                jumpToPage(1);
-                getCount();
-            }
+            if (args.reload)
+                jumpToPage(1, { reload: true });
 
+            if (args.count)
+                getButtons(args.count);
         });
 
         this.$onInit = function () {
@@ -53,7 +52,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            return vm.options.getCount({ operation: operation }).then(function (countArg) {
+            return vm.options.getCount().then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -111,14 +110,22 @@
             return jumpToPage(vm.totalButtons);
         }
 
-        function jumpToPage(pageNum) {
+        function jumpToPage(pageNum, options) {
             vm.currentPage = pageNum;
             vm.options.query.skip = (pageNum - 1) * vm.options.query.limit;
-            return changePage();
+            return changePage(options);
         }
 
-        function changePage() {
-            return vm.onPageChange({ query: vm.options.query, operation: operation });
+        function changePage(options) {
+            return vm.onPageChange({
+                options: Object.assign(
+                    {
+                        query: vm.options.query,
+                        operation: operation
+                    },
+                    options
+                )
+            });
         }
 
         var jumper = 20,
