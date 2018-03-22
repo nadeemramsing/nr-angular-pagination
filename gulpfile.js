@@ -55,6 +55,9 @@ gulp.task('index', function (cb) {
 
     return gulp
         .src('src/demo/index.html')
+        .pipe(htmlmin({
+            removeComments: true
+        }))
         .pipe(versionAppend(['html', 'js', 'css']))
         .pipe(embedlr())
         .pipe(gulp.dest('dev'));
