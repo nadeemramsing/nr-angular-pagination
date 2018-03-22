@@ -16,15 +16,19 @@
       layout="column"
       ng-cloak>
 
-    <md-input-container>
+    <md-input-container ng-model-options="{'updateOn': 'default blur','debounce': {'default': 1000,'blur': 0}}">
         <label>Search</label>
         <input ng-model="paginationOptions.searchText"
-               ng-model-options="{'updateOn': 'default blur','debounce': {'default': 500,'blur': 0}}"
+               ng-model-options="{'*': '$inherit','updateOn': 'blur'}"
                ng-change="searchComments()">
         <!-- 
             updateOn: when to run $digest/check for change; default events = paste, input, ...
             debounce: no. of ms after which $digest is ran; can be specified for each event
             Here,  on blur, $digest ran after 0 ms.
+
+            Inheritance:
+            ng-model-options is always inherited from parent
+            *: $inherit => inherits all properties; can then overwrite/add new properties
         -->
     </md-input-container>
 
