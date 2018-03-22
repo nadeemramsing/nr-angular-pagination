@@ -19,9 +19,11 @@
             'searchText': ''
         };
         $scope.comments = [];
-        
-        $scope.getCount = getCommentsCount,
+
+        $scope.getCount = getCommentsCount;
+        $scope.onLimitChange = onLimitChange;
         $scope.onPageChange = onPageChange;
+
         $scope.searchComments = searchComments;
 
         /* INIT */
@@ -31,6 +33,10 @@
             });
 
         /* FUNCTION DECLARATIONS */
+        function onLimitChange(limit) {
+            console.log("onLimitChange, limit = " + limit);
+        }
+
         function onPageChange(options) {
             var promises = {};
 

@@ -194,7 +194,7 @@
 
     }
 })();
-angular.module('NrAngularPagination').run(['$templateCache', function($templateCache) {$templateCache.put('tpl/nr-angular-pagination.html','<div id="nr-pagination" class="pagination attribution-pagination nr-pagination-wrapper">\r\n    <div layout="row" layout-align="center center">\r\n        <md-select ng-model="vm.data.query.limit" ng-change="vm.changeLimit()" aria-label="change limit">\r\n            <md-option ng-repeat="limit in [25, 50, 100, 500]" ng-value="limit">\r\n                {{limit}}\r\n            </md-option>\r\n        </md-select>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.firstPage()" class="prev">&laquo;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Premi\xE8re page</md-tooltip>\r\n        </ul>\r\n        <br>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.prevPage()" class="prev">&lt;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page pr\xE9c\xE9dente</md-tooltip>\r\n        </ul>\r\n        <ul class="nr-pagination list" ng-repeat="i in vm.pages">\r\n            <li ng-if="vm.show($index)">\r\n                <a ng-class="{active: vm.currentPage === $index+1}" ng-click="vm.jumpToPage(i);">{{i}}</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page {{i}}</md-tooltip>\r\n        </ul>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.nextPage()" class="next">&gt;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page suivante</md-tooltip>\r\n\r\n        </ul>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.lastPage()" class="next">&raquo;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Derni\xE8re page</md-tooltip>\r\n        </ul>\r\n        <br>\r\n\r\n    </div>\r\n</div>');}]);
+angular.module('NrAngularPagination').run(['$templateCache', function($templateCache) {$templateCache.put('tpl/nr-angular-pagination.html','<div id="nr-pagination" class="pagination attribution-pagination nr-pagination-wrapper">\r\n    <div layout="row" layout-align="center center">\r\n        <md-select ng-model="vm.options.query.limit" ng-change="vm.changeLimit()" aria-label="change limit">\r\n            <md-option ng-repeat="limit in [5, 10, 25, 50, 100, 500]" ng-value="limit">\r\n                {{limit}}\r\n            </md-option>\r\n        </md-select>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.firstPage()" class="prev">&laquo;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Premi\xE8re page</md-tooltip>\r\n        </ul>\r\n        <br>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.prevPage()" class="prev">&lt;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page pr\xE9c\xE9dente</md-tooltip>\r\n        </ul>\r\n        <ul class="nr-pagination list" ng-repeat="i in vm.pages">\r\n            <li ng-if="vm.show($index)">\r\n                <a ng-class="{active: vm.currentPage === $index+1}" ng-click="vm.jumpToPage(i);">{{i}}</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page {{i}}</md-tooltip>\r\n        </ul>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.nextPage()" class="next">&gt;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page suivante</md-tooltip>\r\n\r\n        </ul>\r\n        <ul class="nr-pagination list">\r\n            <li>\r\n                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.lastPage()" class="next">&raquo;</a>\r\n            </li>\r\n            <md-tooltip md-direction="{{bottom}}" md-delay="750">Derni\xE8re page</md-tooltip>\r\n        </ul>\r\n        <br>\r\n\r\n    </div>\r\n</div>');}]);
 "undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,".nr-pagination-wrapper {\n" +
 "    padding: 10px 0;\n" +
 "}\n" +
@@ -271,9 +271,11 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
             'searchText': ''
         };
         $scope.comments = [];
-        
-        $scope.getCount = getCommentsCount,
+
+        $scope.getCount = getCommentsCount;
+        $scope.onLimitChange = onLimitChange;
         $scope.onPageChange = onPageChange;
+
         $scope.searchComments = searchComments;
 
         /* INIT */
@@ -283,6 +285,10 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
             });
 
         /* FUNCTION DECLARATIONS */
+        function onLimitChange(limit) {
+            console.log("onLimitChange, limit = " + limit);
+        }
+
         function onPageChange(options) {
             var promises = {};
 

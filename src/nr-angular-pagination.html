@@ -1,7 +1,7 @@
 <div id="nr-pagination" class="pagination attribution-pagination nr-pagination-wrapper">
     <div layout="row" layout-align="center center">
-        <md-select ng-model="vm.data.query.limit" ng-change="vm.changeLimit()" aria-label="change limit">
-            <md-option ng-repeat="limit in [25, 50, 100, 500]" ng-value="limit">
+        <md-select ng-model="vm.options.query.limit" ng-change="vm.changeLimit()" aria-label="change limit">
+            <md-option ng-repeat="limit in [5, 10, 25, 50, 100, 500]" ng-value="limit">
                 {{limit}}
             </md-option>
         </md-select>
