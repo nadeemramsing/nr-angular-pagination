@@ -15,12 +15,12 @@
         var BASEURL = 'http://localhost:4000/api/comments';
 
         $scope.paginationOptions = {
-            'getCount': getCommentsCount,
             'query': { skip: 0, limit: 5 },
             'searchText': ''
         };
         $scope.comments = [];
-
+        
+        $scope.getCount = getCommentsCount,
         $scope.onPageChange = onPageChange;
         $scope.searchComments = searchComments;
 

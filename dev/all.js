@@ -7,9 +7,10 @@
         .module('NrAngularPagination', [])
         .component('pagination', {
             bindings: {
-                options: '=',
+                getCount: '&',
+                onLimitChange: '&',
                 onPageChange: '&',
-                onLimitChange: '&'
+                options: '='
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
@@ -62,7 +63,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            return vm.options.getCount().then(function (countArg) {
+            return vm.getCount().then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -170,17 +171,14 @@
 
         function handleOptions() {
             var requiredOptions = [
-                'getCount',
                 'query'
             ];
-
             checkDifference(vm.options, requiredOptions, 'options');
 
             var requiredQueryOptions = [
                 'skip',
                 'limit'
             ];
-
             checkDifference(vm.options.query, requiredQueryOptions, 'options.query');
         }
 
@@ -269,12 +267,12 @@ angular.module('NrAngularPagination').run(['$templateCache', function($templateC
         var BASEURL = 'http://localhost:4000/api/comments';
 
         $scope.paginationOptions = {
-            'getCount': getCommentsCount,
             'query': { skip: 0, limit: 5 },
             'searchText': ''
         };
         $scope.comments = [];
-
+        
+        $scope.getCount = getCommentsCount,
         $scope.onPageChange = onPageChange;
         $scope.searchComments = searchComments;
 

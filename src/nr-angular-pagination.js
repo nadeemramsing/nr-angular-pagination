@@ -6,9 +6,10 @@
         .module('NrAngularPagination', [])
         .component('pagination', {
             bindings: {
-                options: '=',
+                getCount: '&',
+                onLimitChange: '&',
                 onPageChange: '&',
-                onLimitChange: '&'
+                options: '='
             },
             templateUrl: 'tpl/nr-angular-pagination.html',
             controller: PaginationController,
@@ -61,7 +62,7 @@
 
         /* FUNCTION DECLARATIONS */
         function getCount() {
-            return vm.options.getCount().then(function (countArg) {
+            return vm.getCount().then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
@@ -169,17 +170,14 @@
 
         function handleOptions() {
             var requiredOptions = [
-                'getCount',
                 'query'
             ];
-
             checkDifference(vm.options, requiredOptions, 'options');
 
             var requiredQueryOptions = [
                 'skip',
                 'limit'
             ];
-
             checkDifference(vm.options.query, requiredQueryOptions, 'options.query');
         }
 
