@@ -1,41 +1,61 @@
-<div id="nr-pagination" class="pagination attribution-pagination nr-pagination-wrapper">
-    <div layout="row" layout-align="center center">
-        <md-select ng-model="vm.options.query.limit" ng-change="vm.changeLimit()" aria-label="change limit">
-            <md-option ng-repeat="limit in [5, 10, 25, 50, 100, 500]" ng-value="limit">
+<div id="nr-pagination"
+     class="pagination attribution-pagination nr-pagination-wrapper">
+    <div layout="row"
+         layout-align="center center">
+        <md-select ng-model="vm.options.query.limit"
+                   ng-change="vm.changeLimit()"
+                   aria-label="change limit">
+            <md-option ng-repeat="limit in [5, 10, 25, 50, 100, 500]"
+                       ng-value="limit">
                 {{limit}}
             </md-option>
         </md-select>
         <ul class="nr-pagination list">
             <li>
-                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.firstPage()" class="prev">&laquo;</a>
+                <a ng-class="{none: vm.currentPage === 1}"
+                   ng-click="vm.firstPage()"
+                   class="prev">&laquo;</a>
             </li>
-            <md-tooltip md-direction="{{bottom}}" md-delay="750">Première page</md-tooltip>
+            <md-tooltip md-direction="{{bottom}}"
+                        md-delay="750">Première page</md-tooltip>
         </ul>
         <br>
         <ul class="nr-pagination list">
             <li>
-                <a ng-class="{none: vm.currentPage === 1}" ng-click="vm.prevPage()" class="prev">&lt;</a>
+                <a ng-class="{none: vm.currentPage === 1}"
+                   ng-click="vm.prevPage()"
+                   class="prev">&lt;</a>
             </li>
-            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page précédente</md-tooltip>
+            <md-tooltip md-direction="{{bottom}}"
+                        md-delay="750">Page précédente</md-tooltip>
         </ul>
-        <ul class="nr-pagination list" ng-repeat="i in vm.pages">
+        <ul class="nr-pagination list"
+            ng-repeat="i in vm.pages">
             <li ng-if="vm.show($index)">
-                <a ng-class="{active: vm.currentPage === $index+1}" ng-click="vm.jumpToPage(i);">{{i}}</a>
+                <a ng-class="{active: vm.currentPage === $index+1}"
+                   ng-click="vm.jumpToPage(i);">{{i}}</a>
             </li>
-            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page {{i}}</md-tooltip>
+            <md-tooltip md-direction="{{bottom}}"
+                        md-delay="750">Page {{i}}</md-tooltip>
         </ul>
         <ul class="nr-pagination list">
             <li>
-                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.nextPage()" class="next">&gt;</a>
+                <a ng-class="{none: vm.currentPage === vm.pages.length}"
+                   ng-click="vm.nextPage()"
+                   class="next">&gt;</a>
             </li>
-            <md-tooltip md-direction="{{bottom}}" md-delay="750">Page suivante</md-tooltip>
+            <md-tooltip md-direction="{{bottom}}"
+                        md-delay="750">Page suivante</md-tooltip>
 
         </ul>
         <ul class="nr-pagination list">
             <li>
-                <a ng-class="{none: vm.currentPage === vm.pages.length}" ng-click="vm.lastPage()" class="next">&raquo;</a>
+                <a ng-class="{none: vm.currentPage === vm.pages.length}"
+                   ng-click="vm.lastPage()"
+                   class="next">&raquo;</a>
             </li>
-            <md-tooltip md-direction="{{bottom}}" md-delay="750">Dernière page</md-tooltip>
+            <md-tooltip md-direction="{{bottom}}"
+                        md-delay="750">Dernière page</md-tooltip>
         </ul>
         <br>
 
