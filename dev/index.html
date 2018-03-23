@@ -12,7 +12,7 @@
 
     <md-input-container ng-model-options="{'updateOn': 'default blur','debounce': {'default': 1000,'blur': 0}}">
         <label>Search</label>
-        <input ng-model="paginationOptions.searchText" ng-model-options="{'*': '$inherit','updateOn': 'blur'}" ng-change="searchComments()">
+        <input ng-model="paginationOptions.searchText" ng-model-options="{'*': '$inherit','debounce': {'default': 0}}" ng-change="searchComments()">
         
     </md-input-container>
 
