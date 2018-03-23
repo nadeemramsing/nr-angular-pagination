@@ -5,7 +5,7 @@
     PaginationController.$inject = ["$scope"];
     angular
         .module('NrAngularPagination', [])
-        .component('pagination', {
+        .component('nrPagination', {
             bindings: {
                 getCount: '&',
                 onLimitChange: '&',
