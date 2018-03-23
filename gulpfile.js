@@ -97,6 +97,7 @@ gulp.task('css', function () {
     return gulp
         .src('src/nr-angular-pagination.css')
         .pipe(css2js())
+        .pipe(gulpif(dist, uglify()))
         .pipe(concat('3_css.temp.js'))
         .pipe(gulpif(dist, gulp.dest('dist'), gulp.dest('dev')));
 });
