@@ -61,22 +61,26 @@
         };
 
         /* FUNCTION DECLARATIONS */
-        function getCount() {
-            return vm.getCount().then(function (countArg) {
+        function getCount(query) {
+            return vm.getCount({ query: query }).then(function (countArg) {
                 count = typeof countArg === 'number' ? countArg : parseInt(countArg);
                 getButtons(count);
             });
         }
 
         function changeLimit() {
-            getButtons(count);
+            var query = Object.assign({}, additionalQuery, vm.options.query);
 
-            if (vm.currentPage > vm.totalButtons)
-                jumpToPage(vm.totalButtons);
-            else
-                jumpToPage(vm.currentPage);
+            getCount(query).then(function () {
+                getButtons(count);
 
-            return vm.onLimitChange({ limit: vm.options.query.limit });
+                if (vm.currentPage > vm.totalButtons)
+                    jumpToPage(vm.totalButtons);
+                else
+                    jumpToPage(vm.currentPage);
+
+                return vm.onLimitChange({ limit: vm.options.query.limit });
+            });
         }
 
         function getButtons(count) {
